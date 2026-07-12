@@ -3,7 +3,7 @@ name = "giteyes"
 version = "0.2.0"
 description = "A terminal dashboard for exploring git commit activity, locally or via the GitHub API."
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10" # Updated from 3.9
 license = { text = "MIT" }
 authors = [{ name = "henderson-01" }]
 dependencies = [
@@ -11,7 +11,8 @@ dependencies = [
     "gitpython>=3.1",
     "typer>=0.12",
     "rich>=13.7",
-    "requests>=2.32.2", # Bumped from 2.31 to fix CVEs
+    "requests>=2.33.1",
+    "urllib3>=2.2.2",
 ]
 
 [project.urls]
@@ -22,7 +23,7 @@ giteyes = "giteyes.cli:app"
 
 [project.optional-dependencies]
 dev = [
-    "pytest>=8.3.2", # Bumped from 8.0 to fix tmpdir handling
+    "pytest>=9.0.3",
     "pytest-asyncio>=0.23",
 ]
 
