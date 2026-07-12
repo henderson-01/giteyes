@@ -73,7 +73,14 @@ If you are adding new files or functions, match the existing style of the reposi
 
 Testing is a first-class citizen in `giteyes`. We have a strict policy to ensure that new contributions **do not break the application**. Because we deal with file systems, git histories, and terminal UIs, we use specific patterns to keep tests fast and reliable.
 
-To run the test suite:
+First, ensure you have the development dependencies installed:
+
+```bash
+uv sync --extra dev
+
+```
+
+Then, run the tests:
 
 ```bash
 uv run pytest
