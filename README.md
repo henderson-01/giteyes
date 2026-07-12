@@ -196,7 +196,16 @@ uv run giteyes henderson-01/random-quotes
 
 ## Development
 
-Running the test suite is handled smoothly through `uv`:
+Running the test suite is handled smoothly through `uv`.
+
+First, ensure you have the development dependencies installed:
+
+```bash
+uv sync --extra dev
+
+```
+
+Then, run the tests:
 
 ```bash
 uv run pytest
