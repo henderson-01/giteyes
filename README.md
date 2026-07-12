@@ -132,40 +132,40 @@ uv cache clean
 *Should look something like this:*
 
 ```text
- giteyes
-├──  CODE_OF_CONDUCT.md
-├──  CONTRIBUTING.md
-├──  giteyes
-│   ├──  __init__.py
-│   ├──  app.py
-│   ├──  app.tcss
-│   ├──  cli.py
-│   ├──  git_data.py
-│   ├──  models.py
-│   ├──  sources
-│   │   ├──  __init__.py
-│   │   ├──  github_api.py
-│   │   └──  local.py
-│   └──  widgets
-│       ├──  __init__.py
-│       ├──  commits.py
-│       ├──  contributors.py
-│       ├──  heatmap.py
-│       └──  hotspots.py
-├──  images
-│   ├──  Screenshot-API.png
-│   └──  Screenshot-Local.png
-├──  LICENSE
-├──  pyproject.toml
-├──  README.md
-├──  tests
-│   ├──  conftest.py
-│   ├──  test_app.py
-│   ├──  test_cli.py
-│   ├──  test_git_data.py
-│   ├──  test_github_api.py
-│   └──  test_heatmap_hover.py
-└──  uv.lock
+giteyes
+├── CODE_OF_CONDUCT.md
+├── CONTRIBUTING.md
+├── giteyes
+│   ├── __init__.py
+│   ├── app.py
+│   ├── app.tcss
+│   ├── cli.py
+│   ├── git_data.py
+│   ├── models.py
+│   ├── sources
+│   │   ├── __init__.py
+│   │   ├── github_api.py
+│   │   └── local.py
+│   └── widgets
+│       ├── __init__.py
+│       ├── commits.py
+│       ├── contributors.py
+│       ├── heatmap.py
+│       └── hotspots.py
+├── images
+│   ├── Screenshot-API.png
+│   └── Screenshot-Local.png
+├── LICENSE
+├── pyproject.toml
+├── README.md
+├── tests
+│   ├── conftest.py
+│   ├── test_app.py
+│   ├── test_cli.py
+│   ├── test_git_data.py
+│   ├── test_github_api.py
+│   └── test_heatmap_hover.py
+└── uv.lock
 
 ```
 
