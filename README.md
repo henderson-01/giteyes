@@ -128,6 +128,8 @@ uv cache clean
 
 ```
 
+---
+
 ### Terminal View Project Structure
 
 *Should look something like this:*
@@ -169,6 +171,8 @@ giteyes
 └── uv.lock
 
 ```
+
+---
 
 ### GitHub API Limits & Authentication
 
