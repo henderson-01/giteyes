@@ -21,7 +21,7 @@ You can swap `henderson-01/random-quotes` for any `owner/repo`, a full URL, or a
 > [!TIP]
 > If you plan to use this often, set up a shell alias so you don't have to type the full git URL every time:
 > `alias giteyes='uvx --from git+https://github.com/henderson-01/giteyes giteyes'`
-
+> Also if you CD into your cloned local project path and run `giteyes .` with the above `alias` this will display the project in the TUI
 ---
 
 ### Running via a Local Clone
