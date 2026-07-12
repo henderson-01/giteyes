@@ -18,7 +18,8 @@ uvx --from git+https://github.com/henderson-01/giteyes giteyes https://github.co
 
 You can swap `henderson-01/random-quotes` for any `owner/repo`, a full URL, or a local file path.
 
-> **Tip:** If you plan to use this often, set up a shell alias so you don't have to type the full git URL every time:
+> [!TIP]
+> If you plan to use this often, set up a shell alias so you don't have to type the full git URL every time:
 > `alias giteyes='uvx --from git+https://github.com/henderson-01/giteyes giteyes'`
 
 ### Running via a Local Clone
