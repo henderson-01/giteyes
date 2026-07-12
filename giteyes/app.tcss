@@ -1,0 +1,47 @@
+Screen {
+    background: #0d1117;
+}
+
+.section-title {
+    color: #8b949e;
+    text-style: bold;
+    margin: 1 0 0 1;
+}
+
+#body {
+    padding: 1;
+}
+
+#heatmap {
+    height: auto;
+    margin: 0 0 1 1;
+}
+
+#panels {
+    height: 1fr;
+}
+
+#left-panel {
+    width: 2fr;
+    border: round #21262d;
+    margin-right: 1;
+}
+
+#right-panel {
+    width: 1fr;
+    border: round #21262d;
+}
+
+#commits {
+    height: 1fr;
+}
+
+#hotspots {
+    height: auto;
+    margin: 0 0 1 1;
+}
+
+#contributors {
+    height: auto;
+    margin: 0 0 1 1;
+}
