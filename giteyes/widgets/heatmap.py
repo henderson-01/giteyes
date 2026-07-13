@@ -40,12 +40,15 @@ class CommitHeatmap(Static):
         super().__init__(**kwargs)
         self.grid = grid
 
+    def get_content_height(self, container, viewport, width: int) -> int:
+        return 7 if self.grid else 1
+
     def render(self) -> Text:
         if not self.grid:
             return Text("no commit history in range", style="dim")
 
         max_count = max((count for week in self.grid for count in week), default=0)
-        text = Text()
+        text = Text(no_wrap=True, overflow="ellipsis")
         for day in range(7):
             for week in self.grid:
                 count = week[day] if day < len(week) else 0
