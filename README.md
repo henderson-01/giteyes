@@ -169,7 +169,8 @@ giteyes
 │   ├── test_cli.py
 │   ├── test_git_data.py
 │   ├── test_github_api.py
-│   └── test_heatmap_hover.py
+│   ├── test_heatmap_hover.py
+│   └── test_widget_resize.py
 └── uv.lock
 
 ```
