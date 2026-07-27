@@ -1,4 +1,4 @@
-# giteyes
+# giteyes 👀
 
 A terminal dashboard for exploring git commit activity. View commit heatmaps, recent commits, contributor rankings, and file churn hotspots all rendered live in your terminal.
 
@@ -21,7 +21,9 @@ You can swap `henderson-01/random-quotes` for any `owner/repo`, a full URL, or a
 > [!TIP]
 > If you plan to use this often, set up a shell alias so you don't have to type the full git URL every time:
 > `alias giteyes='uvx --from git+https://github.com/henderson-01/giteyes giteyes'`
-> Also if you CD into your cloned local project path and run `giteyes .` with the above `alias` this will display the project in the TUI
+
+If you CD into your cloned local project path and run `giteyes .` with the above `alias` set this will display the project in the TUI.
+
 ---
 
 ### Running via a Local Clone
@@ -51,6 +53,8 @@ uvx --from . giteyes ../random-quotes
 
 ![Screenshot](images/Screenshot-Local.png)
 
+---
+
 ## Installation (Local & Development)
 
 To install `giteyes` locally for standard usage or development, we use `uv` to manage the environment and dependencies:
@@ -63,6 +67,8 @@ uv sync
 ```
 
 This automatically creates a `.venv`, locks your dependencies, and installs the project in editable mode.
+
+---
 
 ## Usage
 
@@ -93,8 +99,9 @@ cd /path/to/your-target-project
 uvx --from /path/to/cloned/giteyes giteyes .
 
 ```
+---
 
-### 💡 Pro-Tip: Setup a Local Shell Alias
+### 💡 Pro-Tip: Set up a Local Shell Alias
 
 To make running `giteyes` globally seamless, add this alias to your shell profile (e.g., `~/.bashrc` or `~/.zshrc`):
 
@@ -195,6 +202,8 @@ uv run giteyes henderson-01/random-quotes
 
 **API Limitation:** In GitHub API mode, churn hotspots are computed only from the ~20 most recent commits to save your rate limit. In Local mode, hotspots scan the last 200 commits directly from disk. Clone the repo and use Local mode if you need the deepest file churn history.
 
+---
+
 ## Development
 
 Running the test suite is handled smoothly through `uv`.
@@ -215,6 +224,8 @@ uv run pytest
 
 Tests build a real throwaway git repo with scripted, dated commits (see `tests/conftest.py`), exercising the actual code paths without touching your broader filesystem. The Textual UI is tested headlessly via `App.run_test()`, making it CI-friendly. GitHub API mode is tested against a mocked session to avoid network calls and rate limits.
 
+---
+
 ### Architecture
 
 * `giteyes/git_data.py` Pure functions turning a `git.Repo` into plain data structures. Completely decoupled from the UI for easy testing.
@@ -223,6 +234,22 @@ Tests build a real throwaway git repo with scripted, dated commits (see `tests/c
 * `giteyes/app.py` The main Textual `App` that composes the widgets and wires them to the provided `DataSource`.
 * `giteyes/cli.py` The Typer entrypoint. It decides whether to use Local or API mode based on the target string, then launches the app.
 
+---
+
 ## License
 
 MIT — see [LICENSE](/LICENSE)
+
+---
+
+## TODO 
+*Updated this Todo & After-todo list as each part has been achieved.*
+
+- Make the TUI a little better I am thinking of putting the churn-hotspots at the top where the heatmap is now.
+- Move the heatmap and have it down the right side of the TUI where the churn-hotspots is now.
+- Doing this I think it will be best to set the heatmap to its default being (default is 13) permanently this should fit well down the side where the churn-hotspots is currently, some testing may be needed here?.
+
+### After TODO
+
+- Run the pytest make sure all tests pass.
+- Update readme with new images of the TUI and the heatmap is now set to a fixed default of 13.

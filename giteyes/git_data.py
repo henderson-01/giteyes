@@ -41,7 +41,7 @@ def get_commit_heatmap(repo: Repo, weeks: int = 13) -> dict[date, int]:
 def build_heatmap_grid(counts: dict[date, int], weeks: int = 13) -> list[list[int]]:
     """Turn a date->count mapping into a `weeks` x 7 grid ready to render.
 
-    Each inner list is one week, oldest first, with 7 day-slots (Mon..Sun).
+    Each inner list is one week, oldest first, with 7 day-slots (Mon.Sun).
     Days with no recorded commits are 0. This is separated from
     `get_commit_heatmap` so the grid-shaping logic can be tested without a
     real repository.
