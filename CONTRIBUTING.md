@@ -51,13 +51,13 @@ uv run giteyes https://github.com/henderson-01/random-quotes
 
 Before writing code, it helps to know where things live. `giteyes` separates the data layer from the UI to make testing and adding features straightforward.
 
-| Directory / File | Purpose |
-| --- | --- |
-| `giteyes/cli.py` | Typer entrypoint. Parses CLI arguments and determines if the target is local or an API call. |
-| `giteyes/app.py` | The main Textual UI application that wires the data sources to the widgets. |
-| `giteyes/sources/` | Contains the `DataSource` interface. All new data gathering must implement this interface via `LocalGitSource` or `GitHubApiSource`. |
-| `giteyes/git_data.py` | Pure data processing functions. Decoupled from the UI to ensure easy testing. |
-| `giteyes/widgets/` | Individual Textual components (e.g., heatmap, commit tables). Keep these focused on rendering a single piece of data. |
+| Directory / File      | Purpose                                                                                                                              |
+|-----------------------|--------------------------------------------------------------------------------------------------------------------------------------|
+| `giteyes/cli.py`      | Typer entrypoint. Parses CLI arguments and determines if the target is local or an API call.                                         |
+| `giteyes/app.py`      | The main Textual UI application that wires the data sources to the widgets.                                                          |
+| `giteyes/sources/`    | Contains the `DataSource` interface. All new data gathering must implement this interface via `LocalGitSource` or `GitHubApiSource`. |
+| `giteyes/git_data.py` | Pure data processing functions. Decoupled from the UI to ensure easy testing.                                                        |
+| `giteyes/widgets/`    | Individual Textual components (e.g., heatmap, commit tables). Keep these focused on rendering a single piece of data.                |
 
 ---
 
