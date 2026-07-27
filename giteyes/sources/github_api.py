@@ -13,7 +13,7 @@ This trades completeness for zero setup. In particular:
   - There's no cheap API for "which files churn the most" across full
     history. Rather than pay for that with dozens of extra requests, churn
     hotspots here are derived from the same recent commits already fetched
-    for the commit table — a smaller, honest window rather than a slow,
+    for the commit table a smaller, honest window rather than a slow,
     rate-limit-hungry approximation of the local mode's behavior.
 """
 
@@ -55,7 +55,7 @@ class GitHubApiError(Exception):
 
 
 class GitHubApiSource:
-    """Pulls the dashboard's data from api.github.com for a repo you haven't cloned."""
+    """Pulls the dashboard's data from api.GitHub.com for a repo you haven't cloned."""
 
     def __init__(self, owner: str, repo: str, token: str | None = None, session: requests.Session | None = None) -> None:
         self.owner = owner
