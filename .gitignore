@@ -1,5 +1,6 @@
 # --- Python Caches & Compiled files ---
 __pycache__/
+**/__pycache__/
 .pyright-cache/
 *.py[cod]
 *$py.class
@@ -42,8 +43,14 @@ htmlcov/
 .markdownlint_cache/
 .markdownlint-cli2/
 
-# --- AI Extensions in VS Code ---
-.continue/
+# DevoxxGenie local settings & skill caches
+.devoxxgenie/
+
+# Optional: Ignore auto-generated project context files
+DEVOXXGENIE.md
+
+# --- AI Tools & Assistants ---
+.opencode/
 
 # --- System / OS ---
 .DS_Store
