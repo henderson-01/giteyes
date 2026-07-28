@@ -46,7 +46,7 @@ htmlcov/
 # DevoxxGenie local settings & skill caches
 .devoxxgenie/
 
-# Optional: Ignore auto-generated project context files
+# Ignore auto-generated project context files
 DEVOXXGENIE.md
 
 # --- AI Tools & Assistants ---
