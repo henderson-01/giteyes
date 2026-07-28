@@ -33,7 +33,6 @@ def main(
         ".",
         help="A local path, or a GitHub repo (owner/repo, a github.com URL, or a git@ URL).",
     ),
-    weeks: int = typer.Option(13, "--weeks", "-w", help="Weeks of history shown in the heatmap."),
     token: Optional[str] = typer.Option(
         None,
         "--token",
@@ -72,7 +71,7 @@ def main(
             typer.secho(str(exc), fg=typer.colors.RED)
             raise typer.Exit(code=1) from exc
 
-    GiteyesApp(source=source, weeks=weeks).run()
+    GiteyesApp(source=source, weeks=13).run()
 
 
 if __name__ == "__main__":
