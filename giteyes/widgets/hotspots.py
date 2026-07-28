@@ -50,8 +50,19 @@ class HotspotBars(Static):
             path = hotspot.path
             if len(path) > path_width:
                 path = "…" + path[-(path_width - 1):]  # keep the filename end, it's the useful part
+
+            # Calculate filled and empty lengths
             bar_len = int((hotspot.changes / max_changes) * bar_width) if max_changes else 0
+            empty_len = bar_width - bar_len
+
             text.append(f"{path:<{path_width}}", style="bold")
-            text.append("█" * bar_len, style="#d85a30")
+
+            # Append the filled squares in your original orange
+            text.append("■" * bar_len, style="#d85a30")
+
+            # Append the empty background squares
+            # (Using a dark gray so it doesn't distract from the orange)
+            text.append("■" * empty_len, style="#333333")
+
             text.append(f" {hotspot.changes}\n", style="dim")
         return text

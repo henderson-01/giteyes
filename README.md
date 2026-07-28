@@ -83,7 +83,6 @@ uv run giteyes                                                # Dashboard for th
 uv run giteyes /path/to/other-repo                            # Dashboard for a specific local repo
 uv run giteyes henderson-01/random-quotes                     # Dashboard for an uncloned GitHub repo
 uv run giteyes https://github.com/henderson-01/random-quotes  # Full URLs work too
-uv run giteyes --weeks 26                                     # Show 26 weeks of heatmap history (default is 13)
 
 ```
 
@@ -239,17 +238,3 @@ Tests build a real throwaway git repo with scripted, dated commits (see `tests/c
 ## License
 
 MIT — see [LICENSE](/LICENSE)
-
----
-
-## TODO 
-*Updated this Todo & After-todo list as each part has been achieved.*
-
-- Make the TUI a little better I am thinking of putting the churn-hotspots at the top where the heatmap is now.
-- Move the heatmap and have it down the right side of the TUI where the churn-hotspots is now.
-- Doing this I think it will be best to set the heatmap to its default being (default is 13) permanently this should fit well down the side where the churn-hotspots is currently, some testing may be needed here?.
-
-### After TODO
-
-- Run the pytest make sure all tests pass.
-- Update readme with new images of the TUI and the heatmap is now set to a fixed default of 13.

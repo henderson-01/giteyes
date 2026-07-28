@@ -32,6 +32,12 @@ Screen {
     border: round #21262d;
 }
 
+#top-panel {
+    height: 1fr;
+    border: round #21262d;
+    margin-bottom: 1;
+}
+
 #commits {
     height: 1fr;
 }
@@ -42,6 +48,6 @@ Screen {
 }
 
 #contributors {
-    height: auto;
+    height: 1fr;
     margin: 0 0 1 1;
 }
