@@ -27,13 +27,16 @@ import requests
 
 from .. import git_data
 from ..models import CommitInfo, ContributorInfo, FileChurn
+from . import DataSource
 
 API_ROOT = "https://api.github.com"
 
 # Accepts: https://github.com/owner/repo, github.com/owner/repo,
 # git@github.com:owner/repo.git, and the bare "owner/repo" shorthand.
 _GITHUB_PATTERNS = [
-    re.compile(r"^https?://github\.com/(?P<owner>[^/\s]+)/(?P<repo>[^/\s]+?)(?:\.git)?/?$"),
+    re.compile(
+        r"^https?://github\.com/(?P<owner>[^/\s]+)/(?P<repo>[^/\s]+?)(?:\.git)?/?$"
+    ),
     re.compile(r"^github\.com/(?P<owner>[^/\s]+)/(?P<repo>[^/\s]+?)(?:\.git)?/?$"),
     re.compile(r"^git@github\.com:(?P<owner>[^/\s]+)/(?P<repo>[^/\s]+?)(?:\.git)?$"),
     re.compile(r"^(?P<owner>[\w.-]+)/(?P<repo>[\w.-]+)$"),
@@ -54,15 +57,24 @@ class GitHubApiError(Exception):
     """Raised for any unrecoverable GitHub API failure (auth, rate limit, 404, ...)."""
 
 
-class GitHubApiSource:
+class GitHubApiSource(DataSource):
     """Pulls the dashboard's data from api.GitHub.com for a repo you haven't cloned."""
 
-    def __init__(self, owner: str, repo: str, token: str | None = None, session: requests.Session | None = None) -> None:
+    def __init__(
+        self,
+        owner: str,
+        repo: str,
+        token: str | None = None,
+        session: requests.Session | None = None,
+    ) -> None:
         self.owner = owner
         self.repo = repo
         self.token = token or os.environ.get("GITHUB_TOKEN")
         self._session = session or requests.Session()
-        headers = {"Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28"}
+        headers = {
+            "Accept": "application/vnd.github+json",
+            "X-GitHub-Api-Version": "2022-11-28",
+        }
         if self.token:
             headers["Authorization"] = f"Bearer {self.token}"
         self._session.headers.update(headers)
@@ -75,18 +87,27 @@ class GitHubApiSource:
     def _get(self, path: str, params: dict | None = None) -> requests.Response:
         response = self._session.get(f"{API_ROOT}{path}", params=params, timeout=10)
         if response.status_code == 404:
-            raise GitHubApiError(f"{self.owner}/{self.repo} not found on GitHub (or it's private).")
-        if response.status_code == 403 and response.headers.get("X-RateLimit-Remaining") == "0":
+            raise GitHubApiError(
+                f"{self.owner}/{self.repo} not found on GitHub (or it's private)."
+            )
+        if (
+            response.status_code == 403
+            and response.headers.get("X-RateLimit-Remaining") == "0"
+        ):
             reset = int(response.headers.get("X-RateLimit-Reset", 0))
             reset_str = (
-                datetime.fromtimestamp(reset, tz=timezone.utc).strftime("%H:%M:%S UTC") if reset else "soon"
+                datetime.fromtimestamp(reset, tz=timezone.utc).strftime("%H:%M:%S UTC")
+                if reset
+                else "soon"
             )
             raise GitHubApiError(
                 f"GitHub API rate limit hit, resets at {reset_str}. "
                 "Set GITHUB_TOKEN (or pass --token) to raise the limit from 60 to 5,000 requests/hour."
             )
         if response.status_code >= 400:
-            raise GitHubApiError(f"GitHub API error {response.status_code} for {self.owner}/{self.repo}.")
+            raise GitHubApiError(
+                f"GitHub API error {response.status_code} for {self.owner}/{self.repo}."
+            )
         return response
 
     def verify_repo_exists(self) -> None:
@@ -118,8 +139,13 @@ class GitHubApiSource:
         if self._commit_cache is not None and len(self._commit_cache) >= limit:
             return self._commit_cache[:limit]
 
-        summaries = self._get(f"/repos/{self.owner}/{self.repo}/commits", params={"per_page": limit}).json()
-        detailed = [self._get(f"/repos/{self.owner}/{self.repo}/commits/{s['sha']}").json() for s in summaries]
+        summaries = self._get(
+            f"/repos/{self.owner}/{self.repo}/commits", params={"per_page": limit}
+        ).json()
+        detailed = [
+            self._get(f"/repos/{self.owner}/{self.repo}/commits/{s['sha']}").json()
+            for s in summaries
+        ]
         self._commit_cache = detailed
         return detailed
 
@@ -134,7 +160,9 @@ class GitHubApiSource:
                     hexsha=detail["sha"],
                     message=commit_data["message"].strip().splitlines()[0],
                     author=author.get("login") or commit_data["author"]["name"],
-                    committed_at=datetime.fromisoformat(commit_data["author"]["date"].replace("Z", "+00:00")),
+                    committed_at=datetime.fromisoformat(
+                        commit_data["author"]["date"].replace("Z", "+00:00")
+                    ),
                     insertions=stats.get("additions", 0),
                     deletions=stats.get("deletions", 0),
                 )
@@ -142,8 +170,13 @@ class GitHubApiSource:
         return commits
 
     def get_contributors(self, limit: int = 8) -> list[ContributorInfo]:
-        response = self._get(f"/repos/{self.owner}/{self.repo}/contributors", params={"per_page": limit})
-        return [ContributorInfo(name=c["login"], email="", commit_count=c["contributions"]) for c in response.json()]
+        response = self._get(
+            f"/repos/{self.owner}/{self.repo}/contributors", params={"per_page": limit}
+        )
+        return [
+            ContributorInfo(name=c["login"], email="", commit_count=c["contributions"])
+            for c in response.json()
+        ]
 
     def get_churn_hotspots(self, limit: int = 6) -> list[FileChurn]:
         changes: dict[str, int] = {}
@@ -155,4 +188,22 @@ class GitHubApiSource:
                 touches[path] = touches.get(path, 0) + 1
 
         ranked = sorted(changes.items(), key=lambda kv: kv[1], reverse=True)[:limit]
-        return [FileChurn(path=path, changes=count, commit_count=touches[path]) for path, count in ranked]
+        return [
+            FileChurn(path=path, changes=count, commit_count=touches[path])
+            for path, count in ranked
+        ]
+
+    def get_hotspots_for_commit(
+        self, commit_hash: str, limit: int = 6
+    ) -> list[FileChurn]:
+        """Return the file churn for a single specific commit from the GitHub API."""
+        detail = self._get(
+            f"/repos/{self.owner}/{self.repo}/commits/{commit_hash}"
+        ).json()
+        hotspots = []
+        for file_info in detail.get("files", []):
+            path = file_info["filename"]
+            changes = file_info.get("changes", 0)
+            hotspots.append(FileChurn(path=path, changes=changes, commit_count=1))
+        hotspots.sort(key=lambda h: h.changes, reverse=True)
+        return hotspots[:limit]

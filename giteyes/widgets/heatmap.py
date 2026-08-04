@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta, timezone
 
 from rich.text import Text
 from textual import events
@@ -64,7 +64,7 @@ class CommitHeatmap(Static):
         (git_data.build_heatmap_grid): the last column is the current week,
         and day 0 is Monday.
         """
-        today = date.today()
+        today = datetime.now(timezone.utc).date()
         this_monday = today - timedelta(days=today.weekday())
         weeks_back = (len(self.grid) - 1) - week_col
         week_start = this_monday - timedelta(weeks=weeks_back)
@@ -82,5 +82,5 @@ class CommitHeatmap(Static):
         else:
             self.tooltip = None
 
-    def on_leave(self, event: events.Leave) -> None:
+    def on_leave(self, _event: events.Leave) -> None:
         self.tooltip = None

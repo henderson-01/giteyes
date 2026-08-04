@@ -31,3 +31,6 @@ class LocalGitSource:
 
     def get_churn_hotspots(self, limit: int = 6) -> list[FileChurn]:
         return git_data.get_churn_hotspots(self._repo, limit=limit)
+
+    def get_hotspots_for_commit(self, commit_hash: str) -> list[FileChurn]:
+        return git_data.get_hotspots_for_commit(self._repo, commit_hash)

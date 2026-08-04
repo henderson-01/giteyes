@@ -24,6 +24,11 @@ class HotspotBars(Static):
         super().__init__(**kwargs)
         self.hotspots = hotspots
 
+    def update_hotspots(self, hotspots: list[FileChurn]) -> None:
+        """Update the hotspots data and redraw the widget display."""
+        self.hotspots = hotspots
+        self.refresh()
+
     def get_content_height(self, container, viewport, width: int) -> int:
         # The row count only depends on how much data there is, never on
         # width — pin it directly so resizing can never affect panel height,
@@ -57,12 +62,8 @@ class HotspotBars(Static):
 
             text.append(f"{path:<{path_width}}", style="bold")
 
-            # Append the filled squares in your original orange
-            text.append("■" * bar_len, style="#d85a30")
-
-            # Append the empty background squares
-            # (Using a dark gray so it doesn't distract from the orange)
-            text.append("■" * empty_len, style="#333333")
+            text.append("▪" * bar_len, style="#d85a30")
+            text.append("▪" * empty_len, style="#333333")
 
             text.append(f" {hotspot.changes}\n", style="dim")
         return text

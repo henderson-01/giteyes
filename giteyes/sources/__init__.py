@@ -16,7 +16,10 @@ from ..models import CommitInfo, ContributorInfo, FileChurn
 class DataSource(Protocol):
     """Anything that can supply the dashboard's four panels of data."""
 
-    label: str
+    @property
+    def label(self) -> str: ...
+
+    def get_hotspots_for_commit(self, commit_hash: str) -> list[FileChurn]: ...
 
     def get_heatmap_grid(self, weeks: int) -> list[list[int]]: ...
 
