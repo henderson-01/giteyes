@@ -21,7 +21,7 @@ class GiteyesApp(App):
     """
 
     CSS_PATH = "app.tcss"
-    BINDINGS = [
+    BINDINGS = [  # noqa: RUF012
         ("q", "quit", "Quit"),
         ("r", "refresh_data", "Refresh"),
     ]
@@ -39,7 +39,6 @@ class GiteyesApp(App):
         # 'body' is our main wrapper container. The Vertical layout means
         # everything inside it will be stacked from top to bottom.
         with Vertical(id="body"):
-
             # TOP SECTION.
             # This Vertical container spans the top half of the body.
             # In the TCSS, this gets a nice rounded border and '1fr' height.
@@ -53,7 +52,6 @@ class GiteyesApp(App):
             # A Horizontal container places everything inside it side-by-side (left-to-right).
             # This splits the lower half of the screen into columns.
             with Horizontal(id="panels"):
-
                 # LEFT COLUMN.
                 # This vertical container takes up the left side of the bottom section.
                 # In the TCSS gives it '2fr' width, meaning it takes up 2/3 of the horizontal space.
@@ -92,7 +90,7 @@ class GiteyesApp(App):
             recent_commits = self.source.get_recent_commits(limit=12)
             hotspots_data = self.source.get_churn_hotspots(limit=6)
             contributors_data = self.source.get_contributors(limit=8)
-        except Exception as exc:  # keep transient API/network hiccups from crashing the app
+        except Exception as exc:  # keep transient API/network hiccups from crashing the app  # noqa: BLE001
             self.notify(str(exc), severity="error", timeout=8)
             return
 

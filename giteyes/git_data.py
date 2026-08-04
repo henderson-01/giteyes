@@ -31,7 +31,7 @@ def get_repo(path: Path | str) -> Repo:
 
 def get_commit_heatmap(repo: Repo, weeks: int = 13) -> dict[date, int]:
     """Count commits per calendar day over the last `weeks` weeks."""
-    since = datetime.now() - timedelta(weeks=weeks)
+    since = datetime.now() - timedelta(weeks=weeks)  # noqa: DTZ005
     counts: dict[date, int] = defaultdict(int)
     for commit in repo.iter_commits(since=since.isoformat()):
         counts[commit.committed_datetime.date()] += 1
@@ -46,7 +46,7 @@ def build_heatmap_grid(counts: dict[date, int], weeks: int = 13) -> list[list[in
     `get_commit_heatmap` so the grid-shaping logic can be tested without a
     real repository.
     """
-    today = date.today()
+    today = date.today()  # noqa: DTZ011
     start = today - timedelta(days=today.weekday())  # most recent Monday
     grid: list[list[int]] = []
     for week_index in range(weeks - 1, -1, -1):
@@ -64,8 +64,12 @@ def get_recent_commits(repo: Repo, limit: int = 12) -> list[CommitInfo]:
         commits.append(
             CommitInfo(
                 hexsha=commit.hexsha,
-                message=commit.message.strip().splitlines()[0] if commit.message.strip() else "",
-                author=commit.author.name or "unknown",
+                message=(commit.message or "").strip().splitlines()[0]
+                if (commit.message or "").strip()
+                else "",
+                author=commit.author.name
+                if (commit.author and commit.author.name)
+                else "unknown",
                 committed_at=commit.committed_datetime,
                 insertions=stats.get("insertions", 0),
                 deletions=stats.get("deletions", 0),
@@ -74,11 +78,18 @@ def get_recent_commits(repo: Repo, limit: int = 12) -> list[CommitInfo]:
     return commits
 
 
-def get_contributors(repo: Repo, limit: int | None = None, max_commits: int = 1000) -> list[ContributorInfo]:
+def get_contributors(
+    repo: Repo, limit: int | None = None, max_commits: int = 1000
+) -> list[ContributorInfo]:
     """Rank contributors by commit count over the last `max_commits` commits."""
     counter: Counter[tuple[str, str]] = Counter()
     for commit in repo.iter_commits(max_count=max_commits):
-        key = (commit.author.name or "unknown", commit.author.email or "")
+        key = (
+            commit.author.name if (commit.author and commit.author.name) else "unknown",
+            commit.author.email
+            if (commit.author and commit.author.name)
+            else "unknown",
+        )
         counter[key] += 1
 
     ranked = [
@@ -88,17 +99,42 @@ def get_contributors(repo: Repo, limit: int | None = None, max_commits: int = 10
     return ranked
 
 
-def get_churn_hotspots(repo: Repo, limit: int = 6, max_commits: int = 200) -> list[FileChurn]:
+def get_churn_hotspots(
+    repo: Repo, limit: int = 6, max_commits: int = 200
+) -> list[FileChurn]:
     """Rank files by total lines changed over the last `max_commits` commits."""
     changes: Counter[str] = Counter()
     touches: Counter[str] = Counter()
     for commit in repo.iter_commits(max_count=max_commits):
         for path, stat in commit.stats.files.items():
-            changes[path] += stat.get("lines", 0)
-            touches[path] += 1
+            string_path = str(path)
+            changes[string_path] += stat.get("lines", 0)
+            touches[string_path] += 1
 
     hotspots = [
         FileChurn(path=path, changes=count, commit_count=touches[path])
         for path, count in changes.most_common(limit)
     ]
     return hotspots
+
+
+def get_hotspots_for_commit(
+    repo: Repo, commit_hash: str, limit: int = 6
+) -> list[FileChurn]:
+    """Rank files by total lines changed in a single specific commit."""
+    # Fetch the specific commit using its hash
+    commit = repo.commit(commit_hash)
+
+    hotspots = []
+    for path, stat in commit.stats.files.items():
+        string_path = str(path)
+        total_changes = stat.get(
+            "lines", stat.get("insertions", 0) + stat.get("deletions", 0)
+        )
+        hotspots.append(
+            FileChurn(path=string_path, changes=total_changes, commit_count=1)
+        )
+
+    # Sort from highest changes to lowest and apply the limit
+    hotspots.sort(key=lambda h: h.changes, reverse=True)
+    return hotspots[:limit]

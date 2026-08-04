@@ -8,8 +8,8 @@ license = { text = "MIT" }
 authors = [{ name = "henderson-01" }]
 dependencies = [
     "textual>=0.58",
-    "gitpython>=3.1.57", # Updated from 3.1.54
-    "typer>=0.27.0", # Updated from 0.26.8
+    "gitpython>=3.1.57",
+    "typer>=0.27.1",
     "rich>=13.7",
     "requests>=2.33.1",
     "urllib3>=2.2.2",
@@ -25,6 +25,7 @@ giteyes = "giteyes.cli:app"
 dev = [
     "pytest>=9.0.3",
     "pytest-asyncio>=0.23",
+    "ruff>=0.16.1",
 ]
 
 [build-system]

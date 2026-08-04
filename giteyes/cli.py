@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
-from typing import Optional
 
 import typer
 
@@ -33,13 +32,13 @@ def main(
         ".",
         help="A local path, or a GitHub repo (owner/repo, a github.com URL, or a git@ URL).",
     ),
-    token: Optional[str] = typer.Option(
+    token: str | None = typer.Option(
         None,
         "--token",
         envvar="GITHUB_TOKEN",
         help="GitHub token for the GitHub API mode (raises the rate limit from 60 to 5,000/hour).",
     ),
-    version_: bool = typer.Option(
+    _version_: bool = typer.Option(
         False,
         "--version",
         callback=_version_callback,
@@ -71,7 +70,7 @@ def main(
             typer.secho(str(exc), fg=typer.colors.RED)
             raise typer.Exit(code=1) from exc
 
-    GiteyesApp(source=source, weeks=13).run()
+    GiteyesApp(source, weeks=13).run()
 
 
 if __name__ == "__main__":

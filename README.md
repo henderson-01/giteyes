@@ -1,6 +1,6 @@
 # giteyes 👀
 
-A terminal dashboard for exploring git commit activity. View commit heatmaps, recent commits, contributor rankings, and file churn hotspots all rendered live in your terminal.
+A terminal dashboard for exploring git commit activity. View commit heatmaps, recent commits, contributor rankings, and file churn hotspots updates when you select different commits from the commit list all rendered live in your terminal.
 
 **giteyes** works in two modes:
 
@@ -43,11 +43,11 @@ uvx --from . giteyes https://github.com/henderson-01/Ollama-uninstall-guides
 **2. Run against another local project on your machine:**
 
 ```bash
-uvx --from . giteyes ../random-quotes
+uvx --from . giteyes ../giteyes
 
 ```
 
-*(This assumes your target project, `random-quotes`, is located in the same parent folder as `giteyes`.)*
+*(This assumes your target project, `giteyes`, is located in the same parent folder as `giteyes`.)*
 
 * Screenshot via Local Clone 👆 UVX command random-quotes
 
