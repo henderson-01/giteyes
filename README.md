@@ -49,7 +49,7 @@ uvx --from . giteyes ../giteyes
 
 *(This assumes your target project, `giteyes`, is located in the same parent folder as `giteyes`.)*
 
-* Screenshot via Local Clone 👆 UVX command random-quotes
+* Screenshot via Local Clone 👆 UVX command giteyes
 
 ![Screenshot](images/Screenshot-Local.png)
 
