@@ -138,37 +138,38 @@ uv cache clean
 
 ---
 
-### Terminal View Project Structure
+### Project Structure
 
 *Should look something like this:*
 
 ```text
 giteyes
-├── CODE_OF_CONDUCT.md
-├── CONTRIBUTING.md
+├── .github
+│   ├──  ISSUE_TEMPLATE
+│   │    ├──  bug_report.md
+│   │    ├──  feature_request.md
+│   ├──  PULL_REQUEST_TEMPLATE.md
+│   ├──  SECURITY.md
 ├── giteyes
+│   ├── sources
+│   │   ├── __init__.py
+│   │   ├── github_api.py
+│   │   └── local.py
+│   └── widgets
+│   │   ├── __init__.py
+│   │   ├── commits.py
+│   │   ├── contributors.py
+│   │   ├── heatmap.py
+│   │   └── hotspots.py
 │   ├── __init__.py
 │   ├── app.py
 │   ├── app.tcss
 │   ├── cli.py
 │   ├── git_data.py
 │   ├── models.py
-│   ├── sources
-│   │   ├── __init__.py
-│   │   ├── github_api.py
-│   │   └── local.py
-│   └── widgets
-│       ├── __init__.py
-│       ├── commits.py
-│       ├── contributors.py
-│       ├── heatmap.py
-│       └── hotspots.py
 ├── images
 │   ├── Screenshot-API.png
 │   └── Screenshot-Local.png
-├── LICENSE
-├── pyproject.toml
-├── README.md
 ├── tests
 │   ├── conftest.py
 │   ├── test_app.py
@@ -177,6 +178,12 @@ giteyes
 │   ├── test_github_api.py
 │   ├── test_heatmap_hover.py
 │   └── test_widget_resize.py
+├── .gitignore
+├── CODE_OF_CONDUCT.md
+├── CONTRIBUTING.md
+├── LICENSE
+├── pyproject.toml
+├── README.md
 └── uv.lock
 
 ```
