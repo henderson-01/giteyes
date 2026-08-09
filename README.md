@@ -147,6 +147,7 @@ giteyes
 ├── .github
 │   ├──  ISSUE_TEMPLATE
 │   │    ├──  bug_report.md
+│   │    ├──  config.yml
 │   │    ├──  feature_request.md
 │   ├──  PULL_REQUEST_TEMPLATE.md
 │   ├──  SECURITY.md
