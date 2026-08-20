@@ -3,12 +3,12 @@ name = "giteyes"
 version = "0.2.0"
 description = "A terminal dashboard for exploring git commit activity, locally or via the GitHub API."
 readme = "README.md"
-requires-python = ">=3.10" # Updated from 3.9
+requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [{ name = "henderson-01" }]
 dependencies = [
     "textual>=0.58",
-    "gitpython==3.1.59",
+    "gitpython>=3.1.59",
     "typer>=0.27.1",
     "rich>=13.7",
     "requests>=2.33.1",
