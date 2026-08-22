@@ -46,7 +46,7 @@ giteyes
 │   │   ├── __init__.py
 │   │   ├── github_api.py
 │   │   └── local.py
-│   └── widgets
+│   ├── widgets
 │   │   ├── __init__.py
 │   │   ├── commits.py
 │   │   ├── contributors.py
