@@ -56,7 +56,7 @@ giteyes https://github.com/henderson-01/random-quotes
 
 ---
 
-### Running via a Local Clone
+## Running via a Local Clone
 
 If you have already cloned the `giteyes` repository and want to run it directly from the source, you can use `uvx --from .` from inside the `giteyes` directory.
 
@@ -167,7 +167,7 @@ giteyes .
 
 ---
 
-### UV/UVX Cache Cleanup
+## UV/UVX Cache Cleanup
 
 You can occasionally clean uv's cache with:
 
@@ -179,19 +179,19 @@ This removes cached packages and environments. They will be downloaded again whe
 
 ---
 
-### GitHub API Limits & Authentication
+## GitHub API Limits & Authentication
 
 GitHub's unauthenticated REST API allows 60 requests per hour. Because each dashboard load makes roughly 15 requests, you will hit this limit quickly.
 
 To raise your limit to 5,000 requests per hour, provide a [personal access token](https://github.com/settings/tokens) (no special scopes are needed for public repos):
 
 ```bash
-# Pass it as an argument example
-uv run giteyes henderson-01/random-quotes --token ghp_yourtokenhere
+# Pass it as an argument
+giteyes henderson-01/random-quotes --token ghp_yourtokenhere
 
 # Or export it as an environment variable
 export GITHUB_TOKEN=ghp_yourtokenhere
-uv run giteyes henderson-01/random-quotes
+giteyes henderson-01/random-quotes
 
 ```
 
