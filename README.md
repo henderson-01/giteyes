@@ -1,6 +1,6 @@
 # giteyes 👀
 
-A terminal dashboard for exploring git commit activity. View commit heatmaps, recent commits, contributor rankings, and file churn hotspots updates when you select different commits from the commit list all rendered live in your terminal.
+A terminal dashboard for exploring git commit activity. View commit heatmaps, recent commits, contributor rankings, and file churn hotspots. The dashboard updates live as you select different commits from the commit list, all rendered directly in your terminal.
 
 **giteyes** works in two modes:
 
@@ -9,26 +9,56 @@ A terminal dashboard for exploring git commit activity. View commit heatmaps, re
 
 ## Quickstart (Near Zero Installation)
 
-If you have [uv](https://docs.astral.sh/uv/) installed, you can run `giteyes` against **any** GitHub repo immediately, with absolutely no installation required. `uv` will download the tool into a throwaway environment, run it, and leave your system clean afterward:
+If you have [uv](https://docs.astral.sh/uv/) installed, you can run `giteyes` against **any** GitHub repo immediately, with no permanent installation required. `uvx` runs the tool in an isolated environment:
 
 ```bash
 uvx --from git+https://github.com/henderson-01/giteyes giteyes https://github.com/henderson-01/random-quotes
-
 ```
 
-You can swap `henderson-01/random-quotes` for any `owner/repo`, a full URL, or a local file path.
+You can replace `henderson-01/random-quotes` with any `owner/repo`, a full GitHub URL, or a local file path.
 
 > [!TIP]
-> If you plan to use this often, set up a shell alias so you don't have to type the full git URL every time:
-> `alias giteyes='uvx --from git+https://github.com/henderson-01/giteyes giteyes'`
+> If you only use `giteyes occasionally`, `uvx` is the easiest option because it requires no permanent installation.
 
-If you CD into your cloned local project path and run `giteyes .` with the above `alias` set this will display the project in the TUI.
+---
+
+## Permanent Installation with `uv tool`
+
+If you use `giteyes` regularly, you can install it as a persistent command-line tool:
+
+```bash
+uv tool install git+https://github.com/henderson-01/giteyes
+```
+
+Once installed, `giteyes` is available as a normal terminal command and can be run from **any directory**:
+
+```bash
+cd /path/to/your/project
+giteyes .
+```
+
+You don't need to clone the `giteyes` repository or install it into each project.
+
+You can also use it with GitHub repositories:
+
+```bash
+giteyes henderson-01/random-quotes
+```
+
+Or a full GitHub URL:
+
+```bash
+giteyes https://github.com/henderson-01/random-quotes
+```
+
+> [!NOTE]
+> If `giteyes` isn't found after installation, make sure uv's tool executable directory is on your `PATH`. You can use `uv tool update-shell` to configure this automatically.
 
 ---
 
 ### Running via a Local Clone
 
-If you have already cloned the `giteyes` repository and want to run it without fully installing it, you can execute these commands from inside the `giteyes` directory:
+If you have already cloned the `giteyes` repository and want to run it directly from the source, you can use `uvx --from .` from inside the `giteyes` directory.
 
 **1. Pull a repo's stats via GitHub API (without cloning the target project):**
 
@@ -36,7 +66,7 @@ If you have already cloned the `giteyes` repository and want to run it without f
 uvx --from . giteyes https://github.com/henderson-01/Ollama-uninstall-guides
 ```
 
-* Screenshot via GitHub API with the cloned giteyes
+*Screenshot via GitHub API with the cloned giteyes:*
 
 ![Screenshot](images/Screenshot-API.png)
 
@@ -44,12 +74,11 @@ uvx --from . giteyes https://github.com/henderson-01/Ollama-uninstall-guides
 
 ```bash
 uvx --from . giteyes ../giteyes
-
 ```
 
-*(This assumes your target project, `giteyes`, is located in the same parent folder as `giteyes`.)*
+*(This assumes your target project is located in the same parent folder as `giteyes`.)*
 
-* Screenshot via Local Clone 👆 UVX command giteyes
+*Screenshot via Local Clone:*
 
 ![Screenshot](images/Screenshot-Local.png)
 
@@ -57,64 +86,75 @@ uvx --from . giteyes ../giteyes
 
 ## Installation (Local & Development)
 
-To install `giteyes` locally for standard usage or development, we use `uv` to manage the environment and dependencies:
+If you want to develop `giteyes` or run it directly from a local clone, use `uv` to manage the environment and dependencies:
 
 ```bash
 git clone https://github.com/henderson-01/giteyes.git
 cd giteyes
 uv sync
-
 ```
 
-This automatically creates a `.venv`, locks your dependencies, and installs the project in editable mode.
+This creates a `.venv`, synchronizes the dependencies from the lockfile, and installs the project in editable mode.
 
 ---
 
 ## Usage
 
-Because `uv` isolates the installation, how you run the command depends on where you are in your terminal.
+### Running a locally cloned development version
 
-### 1. Running from inside the `giteyes` directory
-
-If you are currently inside your cloned `giteyes` folder, prefix your commands with `uv run`:
+If you are inside your cloned `giteyes` repository, use `uv run`:
 
 ```bash
-uv run giteyes                                                # Dashboard for the current directory
-uv run giteyes /path/to/other-repo                            # Dashboard for a specific local repo
-uv run giteyes henderson-01/random-quotes                     # Dashboard for an uncloned GitHub repo
-uv run giteyes https://github.com/henderson-01/random-quotes  # Full URLs work too
-
+uv run giteyes .                                             # Dashboard for the current directory
+uv run giteyes /path/to/other-repo                           # Dashboard for a specific local repo
+uv run giteyes henderson-01/random-quotes                    # Dashboard for an uncloned GitHub repo
+uv run giteyes https://github.com/henderson-01/random-quotes # Full URLs work too
 ```
 
-### 2. Running from ANY directory on your machine
+### Running the installed command
 
-If you want to analyze a project without shifting your terminal back to the `giteyes` source folder, you can use `uvx` pointing to your local installation directory:
+If you installed `giteyes` with `uv tool install`, you can run it directly from anywhere:
 
 ```bash
-# CD into any project you want to explore
 cd /path/to/your-target-project
-
-# Run giteyes using the local source path
-uvx --from /path/to/cloned/giteyes giteyes .
-
+giteyes .
 ```
+
+No `uv run`, `uvx`, alias, or path to the `giteyes` source directory is required.
+
 ---
 
-### 💡 Pro-Tip: Set up a Local Shell Alias
+### Optional: Create a Shell Alias
 
-To make running `giteyes` globally seamless, add this alias to your shell profile (e.g., `~/.bashrc` or `~/.zshrc`):
+If you prefer to use `uvx` without permanently installing `giteyes`, you can create a shell alias. This lets you type `giteyes` normally while `uvx` handles running the tool.
+
+For Bash or Zsh, add the following to `~/.bashrc` or `~/.zshrc`:
 
 ```bash
-alias giteyes="uvx --from /path/to/cloned/giteyes giteyes"
-
+alias giteyes="uvx --from git+https://github.com/henderson-01/giteyes giteyes"
 ```
 
-Once reloaded, you can simply `cd` into **any** git repository on your machine and type:
+Reload your shell configuration:
 
 ```bash
+source ~/.bashrc
+```
+
+Or, if you're using Zsh:
+
+```bash
+source ~/.zshrc
+```
+
+You can then run:
+
+```bash
+cd /path/to/your/project
 giteyes .
-
 ```
+
+> [!NOTE]
+> This is an alternative to `uv tool install`. The alias does not permanently install `giteyes`; it simply gives the `uvx` command a shorter name.
 
 ---
 
@@ -127,14 +167,15 @@ giteyes .
 
 ---
 
-### UV/UVX Clean Up
+### UV/UVX Cache Cleanup
 
-**Run this to clean up the uv/uvx cache from time to time:**
+You can occasionally clean uv's cache with:
 
 ```bash
 uv cache clean
-
 ```
+
+This removes cached packages and environments. They will be downloaded again when needed.
 
 ---
 
