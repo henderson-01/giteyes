@@ -8,6 +8,7 @@ repo with known commits, call these functions, and assert on the result.
 
 from __future__ import annotations
 
+import os
 from collections import Counter, defaultdict
 from datetime import date, datetime, timedelta
 from pathlib import Path
@@ -107,7 +108,7 @@ def get_churn_hotspots(
     touches: Counter[str] = Counter()
     for commit in repo.iter_commits(max_count=max_commits):
         for path, stat in commit.stats.files.items():
-            string_path = str(path)
+            string_path = path if isinstance(path, str) else os.fspath(path)
             changes[string_path] += stat.get("lines", 0)
             touches[string_path] += 1
 
@@ -127,7 +128,7 @@ def get_hotspots_for_commit(
 
     hotspots = []
     for path, stat in commit.stats.files.items():
-        string_path = str(path)
+        string_path = path if isinstance(path, str) else os.fspath(path)
         total_changes = stat.get(
             "lines", stat.get("insertions", 0) + stat.get("deletions", 0)
         )
