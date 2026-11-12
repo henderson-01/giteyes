@@ -1,9 +1,8 @@
 """Reads data out of a git repository.
 
-Everything here takes a `git.Repo` (or a path) and returns plain data —
-dicts, lists, and the dataclasses in `models.py`. Keeping this layer free of
-any UI code is what makes it straightforward to unit test: build a throwaway
-repo with known commits, call these functions, and assert on the result.
+Functions take a `git.Repo` and return plain data (dicts, lists, `models`
+dataclasses) with no UI code, so they are easy to unit test against a
+throwaway repo.
 """
 
 from __future__ import annotations
@@ -23,7 +22,7 @@ class NotAGitRepoError(Exception):
 
 
 def get_repo(path: Path | str) -> Repo:
-    """Open the git repository containing `path`, searching parent directories."""
+    """Open the git repository containing `path`."""
     try:
         return Repo(Path(path), search_parent_directories=True)
     except (InvalidGitRepositoryError, NoSuchPathError) as exc:
@@ -40,13 +39,7 @@ def get_commit_heatmap(repo: Repo, weeks: int = 13) -> dict[date, int]:
 
 
 def build_heatmap_grid(counts: dict[date, int], weeks: int = 13) -> list[list[int]]:
-    """Turn a date->count mapping into a `weeks` x 7 grid ready to render.
-
-    Each inner list is one week, oldest first, with 7 day-slots (Mon.Sun).
-    Days with no recorded commits are 0. This is separated from
-    `get_commit_heatmap` so the grid-shaping logic can be tested without a
-    real repository.
-    """
+    """Turn a date-to-count mapping into a `weeks` x 7 grid, Monday through Sunday."""
     today = date.today()  # noqa: DTZ011
     start = today - timedelta(days=today.weekday())  # most recent Monday
     grid: list[list[int]] = []
@@ -122,8 +115,7 @@ def get_churn_hotspots(
 def get_hotspots_for_commit(
     repo: Repo, commit_hash: str, limit: int = 6
 ) -> list[FileChurn]:
-    """Rank files by total lines changed in a single specific commit."""
-    # Fetch the specific commit using its hash
+    """Rank files by total lines changed in a single commit."""
     commit = repo.commit(commit_hash)
 
     hotspots = []
@@ -136,6 +128,5 @@ def get_hotspots_for_commit(
             FileChurn(path=string_path, changes=total_changes, commit_count=1)
         )
 
-    # Sort from highest changes to lowest and apply the limit
     hotspots.sort(key=lambda h: h.changes, reverse=True)
     return hotspots[:limit]

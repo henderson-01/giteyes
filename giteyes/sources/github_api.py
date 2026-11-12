@@ -1,20 +1,12 @@
-"""DataSource backed by the GitHub REST API — no clone required.
+"""DataSource backed by the GitHub REST API. No clone required.
 
-This trades completeness for zero setup. In particular:
-  - Unauthenticated requests are capped at 60/hour by GitHub. Pass a token
-    (via --token or the GITHUB_TOKEN env var) to raise that to 5,000/hour.
-  - The heatmap deliberately avoids GitHub's `/stats/commit_activity`
-    endpoint. That endpoint is computed asynchronously and cached — for a
-    repo GitHub hasn't been asked about recently, it returns 202 while it
-    computes in the background, and can stay that way for a while. Instead,
-    the heatmap counts commits directly from the standard (synchronous,
-    always-reliable) commits-listing endpoint, using the exact same
-    grid-building logic as local mode.
-  - There's no cheap API for "which files churn the most" across full
-    history. Rather than pay for that with dozens of extra requests, churn
-    hotspots here are derived from the same recent commits already fetched
-    for the commit table a smaller, honest window rather than a slow,
-    rate-limit-hungry approximation of the local mode's behavior.
+Trade-offs versus local mode:
+  - Unauthenticated requests are capped at 60/hour. Set GITHUB_TOKEN or pass
+    --token to raise that to 5,000/hour.
+  - The heatmap counts commits from the commits-listing endpoint, not
+    `/stats/commit_activity`, which can return 202 while computing.
+  - Churn hotspots come only from the recent commits already fetched for the
+    commit table, avoiding many extra requests across full history.
 """
 
 from __future__ import annotations
@@ -31,8 +23,7 @@ from . import DataSource
 
 API_ROOT = "https://api.github.com"
 
-# Accepts: https://github.com/owner/repo, github.com/owner/repo,
-# git@github.com:owner/repo.git, and the bare "owner/repo" shorthand.
+# Matches https/bare GitHub.com URLs, git@ SSH remotes, and "owner/repo".
 _GITHUB_PATTERNS = [
     re.compile(
         r"^https?://github\.com/(?P<owner>[^/\s]+)/(?P<repo>[^/\s]+?)(?:\.git)?/?$"
@@ -44,7 +35,7 @@ _GITHUB_PATTERNS = [
 
 
 def parse_github_spec(text: str) -> tuple[str, str] | None:
-    """Return (owner, repo) if `text` looks like a GitHub repo reference, else None."""
+    """Return (owner, repo) for a GitHub reference, or None."""
     text = text.strip()
     for pattern in _GITHUB_PATTERNS:
         match = pattern.match(text)
@@ -58,7 +49,7 @@ class GitHubApiError(Exception):
 
 
 class GitHubApiSource(DataSource):
-    """Pulls the dashboard's data from api.GitHub.com for a repo you haven't cloned."""
+    """Dashboard data source for a GitHub repo you haven't cloned."""
 
     def __init__(
         self,
@@ -111,14 +102,14 @@ class GitHubApiSource(DataSource):
         return response
 
     def verify_repo_exists(self) -> None:
-        """Raises GitHubApiError early if the repo doesn't exist / isn't reachable."""
+        """Raise GitHubApiError if the repo is missing or unreachable."""
         self._get(f"/repos/{self.owner}/{self.repo}")
 
     def get_heatmap_grid(self, weeks: int = 13) -> list[list[int]]:
         since = datetime.now(timezone.utc) - timedelta(weeks=weeks)
         counts: dict = {}
         page = 1
-        while page <= 10:  # safety cap: 1,000 commits is far more than 13 weeks needs
+        while page <= 10:  # Safety cap at 1,000 commits.
             commits = self._get(
                 f"/repos/{self.owner}/{self.repo}/commits",
                 params={"since": since.isoformat(), "per_page": 100, "page": page},
@@ -196,7 +187,7 @@ class GitHubApiSource(DataSource):
     def get_hotspots_for_commit(
         self, commit_hash: str, limit: int = 6
     ) -> list[FileChurn]:
-        """Return the file churn for a single specific commit from the GitHub API."""
+        """Rank files by lines changed in a single commit."""
         detail = self._get(
             f"/repos/{self.owner}/{self.repo}/commits/{commit_hash}"
         ).json()

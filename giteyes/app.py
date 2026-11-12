@@ -32,48 +32,32 @@ class GiteyesApp(App):
         self.weeks = weeks
 
     def compose(self) -> ComposeResult:
-        # The Header is the built-in Textual bar at the very top of the app.
-        # Setting show_clock=True displays the current time on the right side.
+        # Built-in top bar; show_clock adds the time on the right.
         yield Header(show_clock=True)
 
-        # 'body' is our main wrapper container. The Vertical layout means
-        # everything inside it will be stacked from top to bottom.
+        # Main wrapper, stacking its children top to bottom.
         with Vertical(id="body"):
-            # TOP SECTION.
-            # This Vertical container spans the top half of the body.
-            # In the TCSS, this gets a nice rounded border and '1fr' height.
+            # Top: recent commits.
             with Vertical(id="top-panel"):
-                # 'Static' renders plain text, which we use as a section title here.
                 yield Static("recent commits", classes="section-title")
-                # The widget that displays the list of commits, taking up the rest of the panel.
                 yield CommitTable(id="commits")
 
-            # BOTTOM SECTION.
-            # A Horizontal container places everything inside it side-by-side (left-to-right).
-            # This splits the lower half of the screen into columns.
+            # Bottom: two columns side by side.
             with Horizontal(id="panels"):
-                # LEFT COLUMN.
-                # This vertical container takes up the left side of the bottom section.
-                # In the TCSS gives it '2fr' width, meaning it takes up 2/3 of the horizontal space.
+                # Left column (2fr): churn hotspots.
                 with Vertical(id="left-panel"):
                     yield Static("churn hotspots", classes="section-title")
-                    # The widget displaying the bars for frequently changed files.
                     yield HotspotBars([], id="hotspots")
 
-                # RIGHT COLUMN.
-                # This vertical container takes up the right side of the bottom section.
-                # In the TCSS gives it '1fr' width, meaning it takes up 1/3 of the horizontal space.
+                # Right column (1fr): activity heatmap and contributors.
                 with Vertical(id="right-panel"):
                     yield Static("commit activity", classes="section-title")
-                    # The widget showing the grid/heatmap of activity over time.
                     yield CommitHeatmap([], id="heatmap")
 
                     yield Static("contributors", classes="section-title")
-                    # The widget showing the list of people who have contributed.
                     yield ContributorList([], id="contributors")
 
-        # The Footer is the built-in bar at the very bottom of the app.
-        # It automatically displays the BINDINGS (like "q" to Quit, "r" to Refresh).
+        # Built-in bottom bar; shows BINDINGS.
         yield Footer()
 
     def on_mount(self) -> None:
@@ -90,7 +74,7 @@ class GiteyesApp(App):
             recent_commits = self.source.get_recent_commits(limit=12)
             hotspots_data = self.source.get_churn_hotspots(limit=6)
             contributors_data = self.source.get_contributors(limit=8)
-        except Exception as exc:  # keep transient API/network hiccups from crashing the app  # noqa: BLE001
+        except Exception as exc:  # Keep transient API/network errors from crashing the app.  # noqa: BLE001
             self.notify(str(exc), severity="error", timeout=8)
             return
 
