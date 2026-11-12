@@ -9,7 +9,7 @@ authors = [{ name = "henderson-01" }]
 dependencies = [
     "textual>=0.58",
     "gitpython>=3.2.1",
-    "typer>=0.27.3",
+    "typer>=0.29.1",
     "rich>=13.7",
     "requests>=2.33.1",
     "urllib3>=2.8.0",
